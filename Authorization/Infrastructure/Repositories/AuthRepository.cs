@@ -1,6 +1,7 @@
 ﻿using Authorization.Application.UseCases.Commands.Delete;
 using Authorization.Core.DTOs;
 using Authorization.Core.Entities;
+using Authorization.Core.Interfaces;
 using Authorization.Infrastructure.DataAccess;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -35,12 +36,12 @@ public class AuthRepository : IAuthRepository
         await _appContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<AuthResponceDTO> Update(UserEntity entity, CancellationToken cancellationToken)
+    public async Task<AuthResponceDto> Update(UserEntity entity, CancellationToken cancellationToken)
     { 
         var unchangedEntity = await _appContext.Users.FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
         _mapper.Map(entity, unchangedEntity);
         await _appContext.SaveChangesAsync(cancellationToken);
-        var response = _mapper.Map<UserEntity, AuthResponceDTO>(unchangedEntity!);
+        var response = _mapper.Map<UserEntity, AuthResponceDto>(unchangedEntity!);
         return response;
     }
 

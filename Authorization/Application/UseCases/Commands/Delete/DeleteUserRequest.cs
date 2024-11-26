@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Authorization.Application.UseCases.Commands.Delete;
 
-public record class DeleteUserRequest:IRequest;
+public record DeleteUserRequest:IRequest;

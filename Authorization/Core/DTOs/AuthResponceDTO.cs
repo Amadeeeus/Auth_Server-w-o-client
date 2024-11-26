@@ -1,6 +1,6 @@
 ﻿namespace Authorization.Core.DTOs;
 
-public class AuthResponceDTO
+public class AuthResponceDto
 {
     public string RefreshToken { get; set; }
     public string AccessToken { get; set; }

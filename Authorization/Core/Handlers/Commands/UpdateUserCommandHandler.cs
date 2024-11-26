@@ -1,6 +1,7 @@
 ﻿using Authorization.Application.UseCases.Commands.Insert;
 using Authorization.Core.DTOs;
 using Authorization.Core.Entities;
+using Authorization.Core.Interfaces;
 using Authorization.Infrastructure.Repositories;
 using AutoMapper;
 using MediatR;
@@ -8,7 +9,7 @@ using MediatR;
 
 namespace Authorization.Core.Handlers.Commands;
 
-public class UpdateUserCommandHandler:IRequestHandler<PutUserRequest, AuthResponceDTO>
+public class UpdateUserCommandHandler:IRequestHandler<PutUserRequest>
 {
     private readonly ILogger<UpdateUserCommandHandler> _logger;
     private readonly IAuthRepository _authRepository;
@@ -26,18 +27,16 @@ public class UpdateUserCommandHandler:IRequestHandler<PutUserRequest, AuthRespon
         _mapper = mapper;
     }
 
-    public async Task<AuthResponceDTO> Handle(PutUserRequest request, CancellationToken cancellationToken)
+    public async Task Handle(PutUserRequest request, CancellationToken cancellationToken)
     {
-        var id = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x=>x.Type=="Id")?.Value;
+        var id = _httpContextAccessor.HttpContext!.Request.Cookies["userId"];
         var entity = _mapper.Map<UserEntity>(request);
         entity.Id = id!;
         var response = await _authRepository.Update(entity, cancellationToken);
         _logger.LogInformation($"User {id} has been successfully updated.");
-        var result = _mapper.Map<AuthResponceDTO>(response);
-        entity.RefreshToken = result.RefreshToken;
-        var mapped = _mapper.Map<UserDto>(result);
+        entity.RefreshToken = response.RefreshToken;
+        var mapped = _mapper.Map<UserDto>(response);
         await _cache.AddCacheAsync(mapped);
         _logger.LogInformation($"User {id} cached.");
-        return result;
     }
 }

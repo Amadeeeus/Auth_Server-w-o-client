@@ -6,7 +6,6 @@ using Authorization.Application.UseCases.Queries.Get;
 using Authorization.Core.DTOs;
 using Authorization.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 
@@ -28,47 +27,47 @@ public class AuthController: ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<CustomSucessResponce<List<UserEntity>>>> GetUsers()
+    public async Task<ActionResult<CustomSucessResponce<List<GetUserDto>>>> GetUsers()
     {
-        List<UserEntity> result =await _mediator.Send(new GetUsersRequest());
-        if (result is null)
-        {
-            return NoContent();
-        }
-
-        return Ok(new CustomSucessResponce<List<UserEntity>>(result));
+        var result =await _mediator.Send(new GetUsersRequest());
+        //if (result.Count < 1)
+        //{
+        //    return NoContent();
+        //}
+        return Ok(new CustomSucessResponce<List<GetUserDto>>(result));
     }
 
     [HttpPost]
-    public async Task<ActionResult<CustomSucessResponce<UserEntity>>> GetUserInfo()
+    public async Task<ActionResult<CustomSucessResponce<GetUserDto>>> GetUserInfo()
     {
         var result = await _mediator.Send(new GetUserRequest());
-        return Ok(new CustomSucessResponce<UserEntity>(result));
+        return Ok(new CustomSucessResponce<GetUserDto>(result));
     }
 
     [AllowAnonymous]
     [HttpPost]
     [Route("/api/register")]
-    public async Task<ActionResult<CustomSucessResponce<AuthResponceDTO>>> RegisterUser([FromBody] RegistrationEntity registrationEntity)
+    public async Task<ActionResult<BaseSucessResponse>> RegisterUser([FromBody] RegistrationEntity registrationEntity)
     {
-        var result = await _mediator.Send(new RegisterUserRequest{Entity = registrationEntity});
-        return Ok(new CustomSucessResponce<AuthResponceDTO>(result));
+        await _mediator.Send(new RegisterUserRequest{Entity = registrationEntity});
+        return Ok(new BaseSucessResponse());
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("/api/login")]
-    public async Task<ActionResult<CustomSucessResponce<AuthResponceDTO>>> LoginUser([FromBody] LoginEntity loginEntity)
+    public async Task<ActionResult<BaseSucessResponse>> LoginUser([FromBody] LoginEntity loginEntity)
     {
         //_logger.LogInformation("Logging in....");
-        var result = await _mediator.Send(new LoginUserRequest{Entity = loginEntity});
-        return Ok(new CustomSucessResponce<AuthResponceDTO>(result));
+        await _mediator.Send(new LoginUserRequest{Entity = loginEntity});
+        return Ok(new BaseSucessResponse());
     }
 
     [HttpPut]
-    public async Task<ActionResult<CustomSucessResponce<AuthResponceDTO>>> ChangeUserData([FromBody] RegistrationEntity registrationEntity)
+    public async Task<ActionResult<BaseSucessResponse>> ChangeUserData([FromBody] RegistrationEntity registrationEntity)
     {
-        var result =await _mediator.Send(new PutUserRequest{Entity = registrationEntity});
-        return Ok(new CustomSucessResponce<AuthResponceDTO>(result));
+        await _mediator.Send(new PutUserRequest{Entity = registrationEntity});
+        return Ok(new BaseSucessResponse());
     }
 
     [HttpDelete]

@@ -1,6 +1,7 @@
 ﻿using Authorization.Application.UseCases.Queries.Get;
 using Authorization.Core.DTOs;
 using Authorization.Core.Entities;
+using Authorization.Core.Interfaces;
 using Authorization.Infrastructure.Repositories;
 using AutoMapper;
 using MediatR;

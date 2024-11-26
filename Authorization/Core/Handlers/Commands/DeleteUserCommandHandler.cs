@@ -1,4 +1,5 @@
 ﻿using Authorization.Application.UseCases.Commands.Delete;
+using Authorization.Core.Interfaces;
 using Authorization.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
@@ -23,7 +24,7 @@ public class DeleteUserCommandHandler:IRequestHandler<DeleteUserRequest>
 
     public async Task Handle(DeleteUserRequest request, CancellationToken cancellationToken)
     {
-        var userId = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x=>x.Type=="Id")?.Value;
+        var userId = _httpContextAccessor.HttpContext.Request.Cookies["UserId"];
         _logger.LogInformation($"Delete user: {userId}");
         var cache = await _cache.GetStringAsync($"user: {userId}",cancellationToken);
         if (cache !=null)

@@ -13,7 +13,7 @@ public class AuthMiddleware
 
     public async Task InvokeAsync(HttpContext context, IJwtTokenGenerator generator)
     {
-        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        var token = context.Request.Headers["Access"].FirstOrDefault()?.Split(" ").Last();
         if (token != null)
         {
             try
@@ -23,10 +23,10 @@ public class AuthMiddleware
             }
             catch (SecurityTokenExpiredException)
             {
-                var RefreshToken = context.Request.Cookies["RefreshToken"];
-                if (RefreshToken != null)
+                var refreshToken = context.Request.Cookies["RefreshToken"];
+                if (refreshToken != null)
                 {
-                    var newAccessToken = generator.GetPrincipalFromExpiredToken(RefreshToken);
+                    var newAccessToken = generator.GetPrincipalFromExpiredToken(refreshToken);
                     if (newAccessToken != null)
                     {
                         context.Response.Headers.Add("New-Access-Token", newAccessToken.ToString());
@@ -56,6 +56,4 @@ public class AuthMiddleware
         }
         await _next(context);
     }
-
-
 }

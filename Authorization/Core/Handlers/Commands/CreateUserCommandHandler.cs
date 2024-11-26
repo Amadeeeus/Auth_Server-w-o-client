@@ -1,6 +1,7 @@
 ﻿using Authorization.Application.UseCases.Commands.Create;
 using Authorization.Core.DTOs;
 using Authorization.Core.Entities;
+using Authorization.Core.Interfaces;
 using Authorization.Core.JWT;
 using Authorization.Infrastructure.Repositories;
 using AutoMapper;
@@ -9,17 +10,19 @@ using Visus.Cuid;
 
 namespace Authorization.Core.Handlers.Commands;
 
-public class CreateUserCommandHandler:IRequestHandler<RegisterUserRequest, AuthResponceDTO>
+public class CreateUserCommandHandler:IRequestHandler<RegisterUserRequest>
 {
   private readonly IDistributedCacheRepository _distributed;
   private readonly ILogger<CreateUserCommandHandler> _logger;
   private readonly IAuthRepository _authRepository;
   private readonly IJwtTokenGenerator _jwtTokenGenerator;
   private readonly IMapper _mapper;
+  private readonly IHttpContextAccessor _httpContextAccessor;
 
   public CreateUserCommandHandler(IDistributedCacheRepository distributed, ILogger<CreateUserCommandHandler> logger,
-    IAuthRepository repository, IJwtTokenGenerator access, IMapper mapper)
+    IAuthRepository repository, IJwtTokenGenerator access, IMapper mapper, IHttpContextAccessor httpContextAccessor)
   {
+    _httpContextAccessor = httpContextAccessor;
     _distributed = distributed;
     _logger = logger;
     _authRepository = repository;
@@ -27,7 +30,7 @@ public class CreateUserCommandHandler:IRequestHandler<RegisterUserRequest, AuthR
     _mapper = mapper;
   }
 
-  public async Task<AuthResponceDTO> Handle(RegisterUserRequest request, CancellationToken cancellationToken)
+  public async Task Handle(RegisterUserRequest request, CancellationToken cancellationToken)
   {
     _logger.LogInformation("Registering user");
     var requestEmail = request.Entity.Email;
@@ -46,11 +49,8 @@ public class CreateUserCommandHandler:IRequestHandler<RegisterUserRequest, AuthR
     register.Id = id;
     var password = new PasswordEntity {Id = passwordId,UserId = id, Password = encrypted};
     await _authRepository.Create(register,password, cancellationToken);
-    var responce = new AuthResponceDTO
-    {
-      AccessToken = access,
-      RefreshToken = refresh
-    };
+    _httpContextAccessor.HttpContext.Response.Cookies.Append("Access",access);
+    _httpContextAccessor.HttpContext.Response.Cookies.Append("Refresh",refresh);
     _logger.LogInformation($"User with email {requestEmail} has been created.");
     await _distributed.AddCacheAsync(new UserDto()
     {
@@ -61,6 +61,5 @@ public class CreateUserCommandHandler:IRequestHandler<RegisterUserRequest, AuthR
       Password = password.Password
     });
     _logger.LogInformation($"User{requestEmail} has been cached.");
-    return responce;
   }
 }

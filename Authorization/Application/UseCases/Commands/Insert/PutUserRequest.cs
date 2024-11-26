@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Authorization.Application.UseCases.Commands.Insert;
 
-public record PutUserRequest : IRequest<AuthResponceDTO>
+public record PutUserRequest : IRequest
 { 
     public RegistrationEntity Entity { get; init; }
 }

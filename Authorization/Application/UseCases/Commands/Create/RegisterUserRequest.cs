@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Authorization.Application.UseCases.Commands.Create;
 
-public record class RegisterUserRequest : IRequest<AuthResponceDTO>
+public record class RegisterUserRequest : IRequest
 {
     public RegistrationEntity Entity { get; init; }
 }

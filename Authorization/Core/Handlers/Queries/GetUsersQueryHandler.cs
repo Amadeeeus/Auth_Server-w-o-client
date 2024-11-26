@@ -2,6 +2,7 @@
 using Authorization.Application.UseCases.Queries.Get;
 using Authorization.Core.DTOs;
 using Authorization.Core.Entities;
+using Authorization.Core.Interfaces;
 using Authorization.Infrastructure.Repositories;
 using AutoMapper;
 using MediatR;
@@ -27,22 +28,23 @@ public class GetUsersQueryHandler:IRequestHandler<GetUsersRequest, List<GetUserD
     public async Task<List<GetUserDto>> Handle(GetUsersRequest request, CancellationToken ct)
     {
         var result = await _authRepository.GetUsers(ct);
-        var cacheResult = _mapper.Map<List<UserDto>>(result);
-        if (result.Count == 0)
+        if (result == null || !result.Any())
         {
+            _logger.LogWarning("No users found in the database.");
             return null!;
         }
-        _logger.LogInformation($"Retrieved {result.Count} users");
-        var cached = _cache.GetCacheAsync();
-        var returnedCache = _mapper.Map<List<UserDto>, List<GetUserDto>>(cached.Result);
-        if (cached.IsCompletedSuccessfully)
+        var cacheResult = _mapper.Map<List<UserDto>>(result);
+        var cachedData = await _cache.GetCacheAsync();
+        if (cachedData != null && cachedData.Any())
         {
-            _logger.LogInformation($"Retrieved {result.Count} users from cache");
-            return returnedCache;
+            _logger.LogInformation($"Retrieved {cachedData.Count} users from cache.");
+            return _mapper.Map<List<GetUserDto>>(cachedData);
         }
         await _cache.AddListCacheAsync(cacheResult);
-        var users = _mapper.Map<List<UserEntity>, List<GetUserDto>>(result);
-        _logger.LogInformation("users added in cache");
+        _logger.LogInformation("Users added to cache.");
+        var users = _mapper.Map<List<GetUserDto>>(result);
+        _logger.LogInformation($"Retrieved {result.Count} users from database.");
         return users;
+
     }
 }
