@@ -14,11 +14,11 @@ builder.Services.AddFluentValidationServices();
 builder.Services.AddServices();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION")));
 builder.Services.AddMediatr();
-builder.Services.AddControllers(opt =>
-    {
-        opt.Filters.Add<ExceptionHandleFilter>();
-    }
-);
+// builder.Services.AddControllers(opt =>
+//     {
+//         opt.Filters.Add<ExceptionHandleFilter>();
+//     }
+// );
 builder.Services.AddApiAuthentification();
 builder.Services.AddCustomCors();
 builder.Services.AddStackExchangeRedisCache(configuration);

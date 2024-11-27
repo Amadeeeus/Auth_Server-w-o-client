@@ -28,10 +28,10 @@ public class GetUserQueryHandler:IRequestHandler<GetUserRequest, GetUserDto>
 
     public async Task<GetUserDto> Handle (GetUserRequest request, CancellationToken token)
     {
-        var id = _accessor.HttpContext!.Request.Cookies["Id"];
+        var id = _accessor.HttpContext!.Request.Cookies["userId"];
         _logger.LogInformation($"GetUserQueryHandler::Handler::Id: {id}");
          var cache =await _cache.GetCacheAsync(id!);
-         if (cache.Id.Length > 1)
+         if (cache != null)
          {
              _logger.LogInformation($"returned user with Id: {id} from cache");
              return _mapper.Map<GetUserDto>(cache);

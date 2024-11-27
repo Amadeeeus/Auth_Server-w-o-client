@@ -36,13 +36,12 @@ public class AuthRepository : IAuthRepository
         await _appContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<AuthResponceDto> Update(UserEntity entity, CancellationToken cancellationToken)
+    public async Task Update(UserDto entity, CancellationToken cancellationToken)
     { 
-        var unchangedEntity = await _appContext.Users.FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
+        var unchangedEntity = await _appContext.Users.Include(x=>x.PasswordEntity).FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
+        
         _mapper.Map(entity, unchangedEntity);
         await _appContext.SaveChangesAsync(cancellationToken);
-        var response = _mapper.Map<UserEntity, AuthResponceDto>(unchangedEntity!);
-        return response;
     }
 
     public async Task<UserEntity>GetUser(string userId, CancellationToken cancellationToken)

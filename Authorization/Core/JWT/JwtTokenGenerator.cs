@@ -32,7 +32,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             expires: DateTime.UtcNow.AddMinutes(_jwtOptions.TokenLifetimeMinutes)
         );
         var tokenValue = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-        return $"Bearer {tokenValue}";
+        return tokenValue;
     }
 
     public string GenerateRefreshToken(string email)
