@@ -1,0 +1,71 @@
+.mainbutton
+{
+    background-color: #378067;
+    padding: 10px;
+    margin: 6% 1%;
+    width: 30%;
+    border:2px solid #378067;
+    color: white;
+    border-radius: 7px;
+}
+.mainbutton:hover
+{
+    background-color: #3c947a;
+    border:2px solid #3c947a;
+    border-radius: 5px;
+    box-shadow: grey 2px 2px;
+}
+.mainbutton:active
+{
+    background-color: #3c947a;
+    border:2px solid grey;
+    border-radius: 5px;
+    box-shadow: grey 2px 2px;
+}
+
+
+.submitbutton
+{
+    background-color: #378067;
+    padding: 10px;
+    margin: 2% 5%;
+    width: 20%;
+    border:2px solid #378067;
+    color: white;
+    border-radius: 5px;
+}
+.submitbutton:hover
+{
+    background-color: #3c947a;
+    border:2px solid #3c947a;
+    border-radius: 5px;
+    box-shadow: grey 2px 2px;
+}
+.submitbutton:active
+{
+    background-color: #3c947a;
+    border:2px solid grey;
+    border-radius: 5px;
+    box-shadow: grey 2px 2px;
+}
+.form
+{
+    margin: 2% 1%;
+    width: 100%;
+    height: 80%;
+
+}
+.tr
+{
+    display: block;
+    margin: 2% 1%;
+    width: 100%;
+}
+.input
+{
+    color: #378067;
+    margin: 0.5% 2%;
+    border-radius: 7px;
+    border:2px solid #378067;
+    height: 100%;
+}

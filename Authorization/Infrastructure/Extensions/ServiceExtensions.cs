@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Org.BouncyCastle.Math.EC;
 
 namespace Authorization.Infrastructure.Extensions;
 public static class ServiceExtensions
@@ -56,6 +57,14 @@ public static class ServiceExtensions
         services.AddAuthorization();
 
         return services;
+    }
+
+    public static void AddSpaFiles(this IServiceCollection services)
+    {
+        services.AddSpaStaticFiles(config =>
+        {
+            config.RootPath = "ClientApp/dist";
+        });
     }
 
     public static void AddStackExchangeRedisCache(this IServiceCollection services, IConfiguration configuration)
@@ -105,7 +114,7 @@ public static class ServiceExtensions
     {
         services.AddCors(opt => opt.AddPolicy("DefaultPolicy",policy =>
         {
-            policy.WithOrigins("http://localhost:4200");
+            policy.AllowAnyOrigin();
             policy.AllowAnyHeader();
             policy.AllowAnyMethod();
         }));

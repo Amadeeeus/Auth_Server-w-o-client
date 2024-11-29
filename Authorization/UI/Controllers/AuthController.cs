@@ -13,7 +13,7 @@ namespace Authorization.UI.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/auth")]
+[Route("api")]
 
 public class AuthController: ControllerBase
 {
@@ -27,6 +27,7 @@ public class AuthController: ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
+    [Route("auth")]
     public async Task<ActionResult<CustomSucessResponce<List<GetUserDto>>>> GetUsers()
     {
         var result =await _mediator.Send(new GetUsersRequest());
@@ -37,7 +38,7 @@ public class AuthController: ControllerBase
         return Ok(new CustomSucessResponce<List<GetUserDto>>(result));
     }
 
-    [HttpPost]
+    [HttpPost("auth")]
     public async Task<ActionResult<CustomSucessResponce<GetUserDto>>> GetUserInfo()
     {
         var result = await _mediator.Send(new GetUserRequest());
@@ -45,8 +46,8 @@ public class AuthController: ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost]
-    [Route("/api/register")]
+    [HttpPost("register")]
+
     public async Task<ActionResult<BaseSucessResponse>> RegisterUser([FromBody] RegistrationEntity registrationEntity)
     {
         await _mediator.Send(new RegisterUserRequest{Entity = registrationEntity});
@@ -54,8 +55,7 @@ public class AuthController: ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost]
-    [Route("/api/login")]
+    [HttpPost("login")]
     public async Task<ActionResult<BaseSucessResponse>> LoginUser([FromBody] LoginEntity loginEntity)
     {
         //_logger.LogInformation("Logging in....");
@@ -63,14 +63,14 @@ public class AuthController: ControllerBase
         return Ok(new BaseSucessResponse());
     }
 
-    [HttpPut]
+    [HttpPut("auth")]
     public async Task<ActionResult<BaseSucessResponse>> ChangeUserData([FromBody] RegistrationEntity registrationEntity)
     {
         await _mediator.Send(new PutUserRequest{Entity = registrationEntity});
         return Ok(new BaseSucessResponse());
     }
 
-    [HttpDelete]
+    [HttpDelete("auth")]
     public async Task<ActionResult<BaseSucessResponse>> DeleteUser()
     {
         await _mediator.Send(new DeleteUserRequest()); 

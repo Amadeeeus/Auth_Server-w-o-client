@@ -1,0 +1,1 @@
+{"ast":null,"code":"export class User {\n  firstName = '';\n  lastName = '';\n  name = '';\n  email = '';\n  token = '';\n}","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

@@ -1,0 +1,26 @@
+﻿{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "baseUrl": "./api/v1/",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "strict": true,
+    "skipLibCheck": true
+  },
+    "files": ["src/main.ts"],
+    "include":["src/**/*.d.ts"]
+  }

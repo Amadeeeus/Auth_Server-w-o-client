@@ -1,0 +1,1 @@
+{"ast":null,"code":"export class RegisterResponse {\n  email = '';\n  password = '';\n  accessToken = '';\n  refreshToken = ``;\n}","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

@@ -1,0 +1,55 @@
+
+body
+{
+    background-color: #000;
+}
+.main
+{
+    background-color: #378067;
+    border-radius: 10px;
+
+    border: 2px solid #378067;
+    align-self: center;
+    height:100%;
+}
+.workflow
+{
+    border: 2px solid white;
+    border-radius: 10px;
+    align-self: center;
+    padding: 5%;
+    margin: 8%;
+    background-color: white;
+    width: 80%;
+    height: 40%;
+}
+.mainbutton
+{
+    background-color: #378067;
+    padding: 10px;
+    margin: 6% 10%;
+    width: 30%;
+    border:2px solid #378067;
+    color: white;
+    border-radius: 5px;
+}
+.buttons
+{
+    background-color: white;
+    padding: 2%;
+    width: 80%;
+    margin: 2% 10%;
+}
+.mainbutton:hover
+{
+    background-color: #3c947a;
+    border: 2px solid #3c947a;
+    box-shadow: grey 2px 2px;
+}
+.mainbutton:active
+{
+    background-color: #3c947a;
+    border:2px solid grey;
+    box-shadow: grey 2px 2px;
+}
+
