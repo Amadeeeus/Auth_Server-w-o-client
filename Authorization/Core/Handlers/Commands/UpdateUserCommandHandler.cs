@@ -37,17 +37,21 @@ public class UpdateUserCommandHandler:IRequestHandler<PutUserRequest>
         entity.Password = BCrypt.Net.BCrypt.HashPassword(entity.Password);
         await _authRepository.Update(entity, cancellationToken);
         _logger.LogInformation($"User {id} has been successfully updated.");
-        var access = _generator.GenerateAccessToken(entity.Id, entity.Email);
+        var access = _generator.GenerateAccessToken(id!, entity.Email);
         var refresh = _generator.GenerateRefreshToken(entity.Email);
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Access");
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Refresh");
         _httpContextAccessor.HttpContext.Response.Cookies.Append("Access", access, new CookieOptions
         {
             HttpOnly = true,
             Expires =  DateTime.Now.AddHours(20),
+            SameSite = SameSiteMode.None
         });
         _httpContextAccessor.HttpContext.Response.Cookies.Append("Refresh", refresh, new CookieOptions
         {
             HttpOnly = true,
             Expires =  DateTime.Now.AddHours(20),
+            SameSite = SameSiteMode.None
         });
         await _cache.AddCacheAsync(entity);
         _logger.LogInformation($"User {id} cached.");

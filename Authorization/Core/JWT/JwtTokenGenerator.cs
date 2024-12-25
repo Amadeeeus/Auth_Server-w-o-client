@@ -19,7 +19,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
     public string GenerateAccessToken(string email, string id)
     {
-        Claim[] claims = [new("id", id), new Claim("email", email)];
+        Claim[] claims = { new Claim("id", id), new Claim("email", email) };
         var secretKey =
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRETKEY")!));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);

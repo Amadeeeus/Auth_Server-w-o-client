@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Authorization.Core.Handlers.Queries;
 
-public class GetUserQueryHandler:IRequestHandler<GetUserRequest, GetUserDto>
+public class GetUserQueryHandler:IRequestHandler<GetUserRequest, UserDto>
 {
     private readonly ILogger<GetUserQueryHandler> _logger;
     private readonly IAuthRepository _authRepository;
@@ -26,7 +26,7 @@ public class GetUserQueryHandler:IRequestHandler<GetUserRequest, GetUserDto>
         _accessor = accessor;
     }
 
-    public async Task<GetUserDto> Handle (GetUserRequest request, CancellationToken token)
+    public async Task<UserDto> Handle (GetUserRequest request, CancellationToken token)
     {
         var id = _accessor.HttpContext!.Request.Cookies["userId"];
         _logger.LogInformation($"GetUserQueryHandler::Handler::Id: {id}");
@@ -34,13 +34,13 @@ public class GetUserQueryHandler:IRequestHandler<GetUserRequest, GetUserDto>
          if (cache != null)
          {
              _logger.LogInformation($"returned user with Id: {id} from cache");
-             return _mapper.Map<GetUserDto>(cache);
+             return _mapper.Map<UserDto>(cache);
          }
          _logger.LogInformation($"User:{id} not found in cache: Going to repository");
         var user = await _authRepository.GetUser(id!, token);
         _logger.LogInformation($"User:{id} found in repository:");
         var addCache = _mapper.Map<UserDto>(user);
-        var result = _mapper.Map<GetUserDto>(addCache); 
+        var result = await _authRepository.GetUserByEmail(user.Email, token);
         await _cache.AddCacheAsync(addCache);
         _logger.LogInformation($"User:{id} added in cache:");
         return result;

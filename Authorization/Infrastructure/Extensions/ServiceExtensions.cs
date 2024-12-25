@@ -58,6 +58,14 @@ public static class ServiceExtensions
         return services;
     }
 
+    public static void AddSpaStaticFiles(this IServiceCollection services)
+    {
+        services.AddSpaStaticFiles(configuration =>
+        {
+            configuration.RootPath = "ClientApp/dist";
+        });
+    }
+
     public static void AddStackExchangeRedisCache(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddStackExchangeRedisCache(options =>
@@ -106,6 +114,7 @@ public static class ServiceExtensions
         services.AddCors(opt => opt.AddPolicy("DefaultPolicy",policy =>
         {
             policy.WithOrigins("http://localhost:4200");
+            policy.AllowCredentials();
             policy.AllowAnyHeader();
             policy.AllowAnyMethod();
         }));
@@ -124,7 +133,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<ICookieService, CookieService>();
         services.AddScoped(typeof(IDistributedCacheRepository), typeof(DistributedCacheRepository));
-
     }
 }

@@ -66,6 +66,8 @@ public class AuthRepository : IAuthRepository
         {
             Id = result.Id,
             Email = result.Email,
+            FirstName = result.FirstName,
+            LastName = result.FirstName,
             Password = password.Password
         };
         return response;

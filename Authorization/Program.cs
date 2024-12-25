@@ -3,6 +3,7 @@ using Authorization.Infrastructure.DataAccess;
 using Authorization.Infrastructure.Extensions;
 using Authorization.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -12,6 +13,7 @@ var configuration = builder.Configuration;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddFluentValidationServices();
 builder.Services.AddServices();
+// builder.Services.AddSpaStaticFiles();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION")));
 builder.Services.AddMediatr();
 // builder.Services.AddControllers(opt =>
@@ -32,10 +34,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("DefaultPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors();
-app.UseMiddleware<AuthMiddleware>();
+app.UseMiddleware<AuthMiddleware>(); 
+// app.UseSpa(spa => 
+// {
+//     spa.Options.SourcePath = "ClientApp";
+//     spa.UseAngularCliServer(npmScript: "start");
+//     spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+// });
 app.Run();
 

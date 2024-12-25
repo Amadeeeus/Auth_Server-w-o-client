@@ -32,6 +32,8 @@ public class DeleteUserCommandHandler:IRequestHandler<DeleteUserRequest>
             await _cache.RemoveAsync($"user: {userId}", cancellationToken);  
         }
         await _authRepository.Delete(userId!, cancellationToken);
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Access");
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Refresh");
         _logger.LogInformation($"User {userId} deleted");
     }
 }

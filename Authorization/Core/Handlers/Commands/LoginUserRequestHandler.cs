@@ -32,7 +32,7 @@ public class LoginUserRequestHandler:IRequestHandler<LoginUserRequest>
     public async Task Handle(LoginUserRequest request, CancellationToken cancellationToken)
     {
         var user = await _authRepository.GetUserByEmail(request.Entity.Email,cancellationToken);
-        if (user==null)
+        if (user.Email==null)
         {
             _logger.LogError("LoginHandler: Email address is invalid");
             throw new UnauthorizedAccessException("Invalid email");
@@ -46,13 +46,17 @@ public class LoginUserRequestHandler:IRequestHandler<LoginUserRequest>
         }
         _httpContextAccessor.HttpContext.Response.Cookies.Append("userId", user.Id, new CookieOptions
         {
-            Expires = DateTimeOffset.UtcNow.AddHours(10)
+            Secure = true,
+            Expires = DateTimeOffset.UtcNow.AddHours(10),
+            SameSite = SameSiteMode.Lax
         });
         var getUser = _mapper.Map<GetUserDto>(user);
         var serializedUser = JsonSerializer.Serialize(getUser);
         _httpContextAccessor.HttpContext.Response.Cookies.Append("userInfo", serializedUser, new CookieOptions
         {
-            Expires = DateTimeOffset.UtcNow.AddHours(10)
+            Secure = false,
+            Expires = DateTimeOffset.UtcNow.AddHours(10),
+            SameSite = SameSiteMode.Lax
         });
         _logger.LogError("LoginHandler: Password correct");
         var access = _access!.GenerateAccessToken(user.Email, user.Id);
@@ -61,13 +65,15 @@ public class LoginUserRequestHandler:IRequestHandler<LoginUserRequest>
         {
             Secure = false,
             HttpOnly = true,
-            Expires = DateTime.UtcNow.AddHours(10)
+            Expires = DateTime.UtcNow.AddHours(10),
+            SameSite = SameSiteMode.Lax
         });
         _httpContextAccessor.HttpContext.Response.Cookies.Append("Refresh", refresh, new CookieOptions
         {
             Secure = false,
             HttpOnly = true,
-            Expires = DateTime.UtcNow.AddHours(10)
+            Expires = DateTime.UtcNow.AddHours(10),
+            SameSite = SameSiteMode.Lax
         });
     }
     }
